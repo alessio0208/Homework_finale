@@ -7,6 +7,9 @@ double f(double x){
     return t;
 }
 
+double error(int n){
+    return 8.0/(12*n*n);
+}
 
 double PI(int n){
     double sum = 0;
@@ -22,5 +25,6 @@ int main(int argc, char*argv[]){
     int n=10000;
     printf("Test n= %d \n",n);
     printf("PI = %f \n",PI(n));
+    printf("estimated error %f", error(n));
     return 0;
 }

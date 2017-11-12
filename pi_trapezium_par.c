@@ -57,14 +57,11 @@ int main(int argc, char*argv[])
 
     local_time=end-start;
     printf("Time = %f \n",local_time);
-
-
-    MPI_Reduce(&local_time, &total_time, 1 , MPI_DOUBLE, MPI_SUM, 0 , MPI_COMM_WORLD); 
-
-    if(id==0) {
+    
+    
+    if(id==0) 
     printf("PI = %f \n",pi);
-    printf("Total time = %f \n",total_time);
-    }
+
     
     MPI_Finalize ();
     return 0;
