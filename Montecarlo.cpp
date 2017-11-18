@@ -9,11 +9,11 @@
  #include <boost/random/variate_generator.hpp>
  #include <boost/generator_iterator.hpp>
  #include <ctime>
- // This is a typedef for a random number generator.
- // Try boost::mt19937 or boost::ecuyer1988 instead of boost::minstd_rand
+
+ 
  typedef boost::minstd_rand base_generator_type;
  
- // This is a reproducible simulation experiment.  See main().
+
  double Montecarlo(double e){
    int n=pow(1.0/(2*e),2);
 
@@ -42,6 +42,8 @@
  
  int main()
  {
+
+   
    double pi=Montecarlo(0.001);
    std::cout<<"PI "<< pi;
    

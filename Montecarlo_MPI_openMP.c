@@ -14,6 +14,7 @@ int main(int argc, char** argv)
 {
     float e;
 
+
     MPI_Status status;
 
     int request_tag = 0;
@@ -34,6 +35,7 @@ int main(int argc, char** argv)
     int server_rank = world_size - 1;
     
     const int server_ranks[1] = {server_rank};
+    
     MPI_Group world_group;
     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
 
@@ -77,18 +79,18 @@ int main(int argc, char** argv)
             MPI_Recv(&request,1,MPI_INT,MPI_ANY_SOURCE,request_tag,MPI_COMM_WORLD,&status);
             
             if(request){
-        
+                #pragma omp parallel for
                 for (int i=0; i<chunk_size; i++){
                     chunk[i] = rand();
                 }
-                MPI_Send(&chunk, chunk_size, MPI_INT,status.MPI_SOURCE,chunk_tag,MPI_COMM_WORLD);
+                MPI_Send(&chunk, chunk_size, MPI_REAL,status.MPI_SOURCE,chunk_tag,MPI_COMM_WORLD);
             }
             else{
                 done++;
-                
+         
             }
         }
-
+      
     }
 
 
@@ -98,22 +100,22 @@ int main(int argc, char** argv)
             int request = 1;
             MPI_Send(&request, 1, MPI_INT,server_rank,request_tag,MPI_COMM_WORLD);
 
-            MPI_Recv(&chunk,chunk_size,MPI_INT,server_rank,chunk_tag,MPI_COMM_WORLD,&status);
+            MPI_Recv(&chunk,chunk_size,MPI_REAL,server_rank,chunk_tag,MPI_COMM_WORLD,&status);
 
+            #pragma omp parallel for reduction(+:inside_count)
             for (int i=0; i<chunk_size; i+=2) {
                 float x = (float)chunk[i]/RAND_MAX;
-                float y = (float) chunk[i+1]/RAND_MAX;
+                float y = (float)chunk[i+1]/RAND_MAX;
                 float z = x*x + y*y;
                 if (z<=1) inside_count++;
                
             }
-
             pi=(float)(4*inside_count)/(chunk_size/2); 
             float temp_e = fabs((pi-PI)/PI);
             
             if(temp_e<= e) {
                 MPI_Send(&pi, 1, MPI_REAL, 0, pi_tag, worker_comm);
-
+               
                 done = 1;  
             }
             MPI_Allreduce(&done, &total_done, 1, MPI_INT, MPI_SUM, worker_comm);
@@ -125,12 +127,11 @@ int main(int argc, char** argv)
             }
         }
     }
-
     
     if (world_rank == 0){
         int flag = 0;
         while(!flag){
-
+            
             MPI_Iprobe(MPI_ANY_SOURCE, pi_tag, worker_comm, &flag, &status );
         }
 
