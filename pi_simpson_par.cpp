@@ -3,6 +3,8 @@
 #include <iostream>
 #include <boost/mpi/timer.hpp>
 #include <boost/mpi/collectives.hpp>
+#include <stdlib.h>
+
 namespace mpi = boost::mpi;
 
 double f(double x){
@@ -50,10 +52,7 @@ int main(int argc, char* argv[])
   if(world.rank()==0)
   std::cout << "PI "<< pi<< std::endl;
 
-  std::cout<< "end " << end << "rank " << world.rank()<< std::endl;
-
-    
-
+  std::cout<< "end " << end << " rank " << world.rank()<< std::endl;
 
 
   return 0;
