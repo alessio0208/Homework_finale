@@ -24,8 +24,12 @@ int main(int argc, char** argv)
     const int chunk_size = 100000;
     int chunk[chunk_size];
     double pi=0;
+<<<<<<< HEAD
     omp_set_num_threads(4);
    
+=======
+
+>>>>>>> 85288932b2d0473ccf650968efcbf8eb7e419ab1
     MPI_Init (&argc, &argv); 
     MPI_Barrier(MPI_COMM_WORLD);
     double start = MPI_Wtime();
@@ -36,6 +40,7 @@ int main(int argc, char** argv)
     int server_rank = world_size - 1;
     
     const int server_ranks[1] = {server_rank};
+<<<<<<< HEAD
    
    #pragma omp parallel
    {
@@ -43,6 +48,9 @@ int main(int argc, char** argv)
     printf("threads=%d ",omp_get_num_threads());
    }
 
+=======
+    
+>>>>>>> 85288932b2d0473ccf650968efcbf8eb7e419ab1
     MPI_Group world_group;
     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
 
@@ -108,17 +116,26 @@ int main(int argc, char** argv)
             MPI_Send(&request, 1, MPI_INT,server_rank,request_tag,MPI_COMM_WORLD);
 
             MPI_Recv(&chunk,chunk_size,MPI_REAL,server_rank,chunk_tag,MPI_COMM_WORLD,&status);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> 85288932b2d0473ccf650968efcbf8eb7e419ab1
             #pragma omp parallel for reduction(+:inside_count)
             for (int i=0; i<chunk_size; i+=2) {
                 float x = (float)chunk[i]/RAND_MAX;
                 float y = (float)chunk[i+1]/RAND_MAX;
                 float z = x*x + y*y;
                 if (z<=1) inside_count++;
+<<<<<<< HEAD
               
             }
 
 
+=======
+               
+            }
+>>>>>>> 85288932b2d0473ccf650968efcbf8eb7e419ab1
             pi=(float)(4*inside_count)/(chunk_size/2); 
             float temp_e = fabs((pi-PI)/PI);
             
